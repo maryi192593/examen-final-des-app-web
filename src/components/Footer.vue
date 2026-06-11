@@ -16,7 +16,7 @@
         <div class="col-md-4 mb-3">
           <h6 class="fw-bold mb-2" style="font-size: 13px;">Enlaces</h6>
           <ul class="list-unstyled" style="font-size: 12px;">
-            <li><router-link to="/dashboard/inicio" class="text-white-50 text-decoration-none">Inicio</router-link></li>
+            <li><router-link to="/dashboard" class="text-white-50 text-decoration-none">Inicio</router-link></li>
             <li><router-link to="/dashboard/productos" class="text-white-50 text-decoration-none">Productos</router-link></li>
             
           </ul>

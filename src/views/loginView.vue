@@ -1,18 +1,6 @@
 <template>
   <!-- Fondo gris claro, centrado vertical y horizontal -->
-  <div class="theme-toggle " >
-  <button @click="toggleTheme" class="theme-btn">
-    
-    <span class="icon">
-      {{ darkMode ? '☀️' : '🌙' }}
-    </span>
-
-    <span class="text">
-      {{ darkMode ? 'Modo Claro' : 'Modo Oscuro' }}
-    </span>
-
-  </button>
-  </div>
+  
     <div class="d-flex justify-content-center align-items-center vh-100">
        <!-- Card blanca del formulario -->
     <div class="card shadow-lg p-4 login-container" >
@@ -82,13 +70,9 @@ const password = ref('')
 const error    = ref(false)
 const success  = ref(false)
 const router   = useRouter()
-const darkMode = ref(false)
 
-function toggleTheme() {
-  darkMode.value = !darkMode.value
-  document.body.classList.toggle('bg-dark', darkMode.value)
-  document.body.classList.toggle('bg-light', !darkMode.value)
-}
+
+
  
 // Función que valida contra usuarios.json
 function login() {

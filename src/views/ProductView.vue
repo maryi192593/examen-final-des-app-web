@@ -47,10 +47,9 @@
     <div v-if="productoDetalle" class="modal-fondo" @click.self="productoDetalle = null">
       <div class="card shadow p-4" style="width: 380px;">
         <img
-  :src="productoDetalle.imagen"
+  :src="buildImageUrl(productoDetalle.imagen)"
   :alt="productoDetalle.nombre"
   style="width: 100%; height: 180px; object-fit: contain; background: #f8f9fa; border-radius: 8px; margin-bottom: 16px;"
-  @error="(e) => e.target.src = '/images/placeholder.png'"
 />
  
         <h5 class="fw-bold mb-3">{{ productoDetalle.nombre }}</h5>
@@ -100,14 +99,33 @@ const productoDetalle = ref(null)
 const alertaCarrito   = ref(false)
 const filtroActivo    = ref('')
  
+// Normaliza rutas de imagen para evitar enlaces antiguos en localStorage
+function normalizarRutaImagen(producto) {
+  if (!producto || typeof producto.imagen !== 'string') return
+  const filename = producto.imagen.split('/').pop()
+  if (!filename) return
+  if (producto.imagen.startsWith('public/img/')) {
+    producto.imagen = `/img/${filename}`
+  } else if (producto.imagen.startsWith('/img/')) {
+    producto.imagen = `/img/${filename}`
+  } else if (producto.imagen.startsWith('img/')) {
+    producto.imagen = `/img/${filename}`
+  } else if (!producto.imagen.includes('/img/')) {
+    producto.imagen = `/img/${filename}`
+  }
+}
+
 // Carga productos
 function cargarProductos() {
   const guardados = localStorage.getItem('technova_productos')
   if (guardados) {
     productos.value = JSON.parse(guardados)
+    productos.value.forEach(normalizarRutaImagen)
+    localStorage.setItem('technova_productos', JSON.stringify(productos.value))
   } else {
     productos.value = productosData
-    localStorage.setItem('technova_productos', JSON.stringify(productosData))
+    productos.value.forEach(normalizarRutaImagen)
+    localStorage.setItem('technova_productos', JSON.stringify(productos.value))
   }
 }
  
@@ -119,6 +137,12 @@ function cargarFiltro() {
 function limpiarFiltro() {
   filtroActivo.value = ''
   localStorage.removeItem('technova_filtro')
+}
+ 
+const buildImageUrl = (path) => {
+  if (!path || typeof path !== 'string') return ''
+  const filename = path.split('/').pop()
+  return filename ? `/img/${filename}` : ''
 }
  
 // Filtra los productos según la categoría activa

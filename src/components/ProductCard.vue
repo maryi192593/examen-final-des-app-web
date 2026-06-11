@@ -2,11 +2,10 @@
   <div class="card h-100 shadow-sm">
  
     <img
-      :src="producto.imagen"
+      :src="buildImageUrl(producto.imagen)"
       :alt="producto.nombre"
       class="card-img-top"
       style="height: 160px; object-fit: contain; padding: 12px; background: #f8f9fa;"
-      @error="onImageError"
     />
  
     <div class="card-body d-flex flex-column">
@@ -71,6 +70,12 @@ defineProps({
     required: true
   }
 })
+
+const buildImageUrl = (path) => {
+  if (!path || typeof path !== 'string') return ''
+  const filename = path.split('/').pop()
+  return filename ? `/img/${filename}` : ''
+}
  
 defineEmits(['agregar-carrito', 'ver-detalles'])
 </script>
