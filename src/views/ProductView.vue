@@ -92,41 +92,19 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import ProductCard from '../components/ProductCard.vue'
-import productosData from '../data/Product.json'
+import productService from '../services/productService.js'
  
 const productos       = ref([])
 const productoDetalle = ref(null)
 const alertaCarrito   = ref(false)
 const filtroActivo    = ref('')
  
-// Normaliza rutas de imagen para evitar enlaces antiguos en localStorage
-function normalizarRutaImagen(producto) {
-  if (!producto || typeof producto.imagen !== 'string') return
-  const filename = producto.imagen.split('/').pop()
-  if (!filename) return
-  if (producto.imagen.startsWith('public/img/')) {
-    producto.imagen = `/img/${filename}`
-  } else if (producto.imagen.startsWith('/img/')) {
-    producto.imagen = `/img/${filename}`
-  } else if (producto.imagen.startsWith('img/')) {
-    producto.imagen = `/img/${filename}`
-  } else if (!producto.imagen.includes('/img/')) {
-    producto.imagen = `/img/${filename}`
-  }
-}
+
 
 // Carga productos
-function cargarProductos() {
-  const guardados = localStorage.getItem('technova_productos')
-  if (guardados) {
-    productos.value = JSON.parse(guardados)
-    productos.value.forEach(normalizarRutaImagen)
-    localStorage.setItem('technova_productos', JSON.stringify(productos.value))
-  } else {
-    productos.value = productosData
-    productos.value.forEach(normalizarRutaImagen)
-    localStorage.setItem('technova_productos', JSON.stringify(productos.value))
-  }
+async function cargarProductos() {
+  const res = await productService.getAllProducts()
+  productos.value = res.data
 }
  
 // Lee el filtro guardado por el Sidebar o Dashboard
@@ -170,10 +148,9 @@ function verDetalles(producto) {
   productoDetalle.value = producto
 }
  
-onMounted(() => {
-  cargarProductos()
+onMounted(async () => {
+  await cargarProductos()
 
-  // Si no viene de una categoría del dashboard, limpia el filtro anterior
   const vieneDeFiltro = localStorage.getItem('technova_desde_filtro')
   if (!vieneDeFiltro) {
     localStorage.removeItem('technova_filtro')

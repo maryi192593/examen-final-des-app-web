@@ -62,32 +62,47 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import usuarios from '../data/users.json'
- 
-// Variables reactivas
+import userService from '../services/userService.js'
+
 const email    = ref('')
 const password = ref('')
 const error    = ref(false)
 const success  = ref(false)
 const router   = useRouter()
 
-
-
- 
-// Función que valida contra usuarios.json
-function login() {
+async function login() {
   error.value   = false
   success.value = false
- 
-  const user = usuarios.find(
-    u => u.email === email.value && u.password === password.value
-  )
- 
-  if (user) {
-    success.value = true
-    setTimeout(() => router.push('/dashboard'), 1500)
-  } else {
+
+  try {
+    const res = await userService.getAllUsuarios()
+    const usuarios = res.data
+     console.log('Usuarios:', usuarios)
+
+    const user = usuarios.find(
+       u => u.email.trim() === email.value.trim() && u.contrasea.trim() === password.value.trim()
+    )
+    console.log('Usuario encontrado:', user)
+
+    if (user) {
+      success.value = true
+      sessionStorage.setItem('usuario', JSON.stringify(user))
+
+      setTimeout(() => {
+        if (user.rol === 'admin') {
+          router.push('/admin/productos')
+        } else {
+          router.push('/dashboard')
+        }
+      }, 1500)
+
+    } else {
+      error.value = true
+    }
+
+  } catch (e) {
     error.value = true
+    console.error('Error al conectar con la API:', e)
   }
 }
 </script>

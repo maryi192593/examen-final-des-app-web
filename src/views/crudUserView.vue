@@ -8,10 +8,9 @@
     </div>
 
     <div class="d-flex justify-content-between align-items-center mb-3">
-      <h3>Gestión de Productos</h3>
-      <!-- Botón abrir modal crear -->
-      <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalCrear">
-        <i class="bi bi-plus-circle"></i> Agregar producto
+      <h3><i class="bi bi-people"></i> Gestión de Usuarios</h3>
+      <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalCrearUsuario">
+        <i class="bi bi-person-plus"></i> Agregar usuario
       </button>
     </div>
 
@@ -20,23 +19,23 @@
       <thead>
         <tr>
           <th>Nombre</th>
-          <th>Precio</th>
+          <th>Correo</th>
+          <th>Rol</th>
           <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(p, i) in productos" :key="i">
-          <td>{{ p.nombre }}</td>
-          <td>{{ p.precio }}</td>
+        <tr v-for="(u, i) in usuarios" :key="u.id">
+          <td>{{ u.nombre }}</td>
+          <td>{{ u.correo }}</td>
+          <td>{{ u.rol }}</td>
           <td>
-            <!-- Botón editar -->
             <button class="btn btn-warning btn-sm me-1" @click="abrirEditar(i)"
-              data-bs-toggle="modal" data-bs-target="#modalEditar">
+              data-bs-toggle="modal" data-bs-target="#modalEditarUsuario">
               <i class="bi bi-pencil"></i> Editar
             </button>
-            <!-- Botón eliminar -->
             <button class="btn btn-danger btn-sm" @click="abrirEliminar(i)"
-              data-bs-toggle="modal" data-bs-target="#modalEliminar">
+              data-bs-toggle="modal" data-bs-target="#modalEliminarUsuario">
               <i class="bi bi-trash"></i> Eliminar
             </button>
           </td>
@@ -45,26 +44,22 @@
     </table>
 
     <!-- MODAL CREAR -->
-    <div class="modal fade" id="modalCrear" tabindex="-1">
+    <div class="modal fade" id="modalCrearUsuario" tabindex="-1">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Agregar producto</h5>
+            <h5 class="modal-title">Agregar usuario</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
           </div>
           <div class="modal-body">
             <input v-model="nuevo.nombre" class="form-control mb-2" placeholder="Nombre" />
-            <input v-model="nuevo.precio" type="number" class="form-control mb-2" placeholder="Precio" />
-            <select v-model="nuevo.categoria" class="form-select mb-2">
-              <option value="">Seleccionar categoría...</option>
-              <option>Laptops</option>
-              <option>Smartphones</option>
-              <option>Audio</option>
-              <option>Monitores</option>
-              <option>Perifericos</option>
-              <option>Tablets</option>
+            <input v-model="nuevo.correo" class="form-control mb-2" placeholder="Correo" />
+            <input v-model="nuevo.password" type="password" class="form-control mb-2" placeholder="Contraseña" />
+            <select v-model="nuevo.rol" class="form-select">
+              <option value="">Seleccionar rol...</option>
+              <option value="admin">Admin</option>
+              <option value="user">Usuario</option>
             </select>
-            <input v-model="nuevo.imagen" class="form-control mb-2" placeholder="URL de imagen" />
           </div>
           <div class="modal-footer">
             <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -77,16 +72,21 @@
     </div>
 
     <!-- MODAL EDITAR -->
-    <div class="modal fade" id="modalEditar" tabindex="-1">
+    <div class="modal fade" id="modalEditarUsuario" tabindex="-1">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Editar producto</h5>
+            <h5 class="modal-title">Editar usuario</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
           </div>
           <div class="modal-body">
             <input v-model="editar.nombre" class="form-control mb-2" placeholder="Nombre" />
-            <input v-model="editar.precio" type="number" class="form-control mb-2" placeholder="Precio" />
+            <input v-model="editar.correo" class="form-control mb-2" placeholder="Correo" />
+            <input v-model="editar.password" type="password" class="form-control mb-2" placeholder="Contraseña" />
+            <select v-model="editar.rol" class="form-select">
+              <option value="admin">Admin</option>
+              <option value="user">Usuario</option>
+            </select>
           </div>
           <div class="modal-footer">
             <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -99,7 +99,7 @@
     </div>
 
     <!-- MODAL ELIMINAR -->
-    <div class="modal fade" id="modalEliminar" tabindex="-1">
+    <div class="modal fade" id="modalEliminarUsuario" tabindex="-1">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
@@ -107,7 +107,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
           </div>
           <div class="modal-body">
-            ¿Estás seguro que deseas eliminar <strong>{{ productos[indiceEliminar]?.nombre }}</strong>?
+            ¿Estás seguro que deseas eliminar a <strong>{{ usuarios[indiceEliminar]?.nombre }}</strong>?
           </div>
           <div class="modal-footer">
             <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -123,54 +123,55 @@
 </template>
 
 <script>
-import productosService from '../services/productService.js'
+import usuariosService from '../services/userService.js'
+
 export default {
   data() {
     return {
-      productos: [],
-      nuevo: { nombre: '', precio: '', categoria: '', imagen: '' },
-      editar: { nombre: '', precio: '', categoria: '', imagen: '' },
+      usuarios: [],
+      nuevo: { nombre: '', correo: '', password: '', rol: '' },
+      editar: { nombre: '', correo: '', password: '', rol: '' },
       indiceEditar: null,
       indiceEliminar: null,
       alerta: { mensaje: '', tipo: 'success' }
     }
   },
   created() {
-  this.cargar()
+    this.cargar()
   },
   methods: {
     async cargar() {
-  const res = await productosService.getAllProducts()
-  this.productos = res.data
-  },
-async agregar() {
-  if (this.nuevo.nombre && this.nuevo.precio) {
-    await productosService.createProduct(this.nuevo)
-    this.cargar()
-    this.mostrarAlerta('Producto agregado correctamente.')
-    this.nuevo = { nombre: '', precio: '' }
-    }
-  },
-  abrirEditar(i) {          
-      this.indiceEditar = i
-      this.editar = { ...this.productos[i] }
+      const res = await usuariosService.getAllUsuarios()
+      this.usuarios = res.data
     },
-async guardarEdicion() {
-  const id = this.productos[this.indiceEditar].id
-  await productosService.updateProduct(id, this.editar)
-  this.cargar()
-  this.mostrarAlerta('Producto actualizado correctamente.', 'warning')
-  },
-   abrirEliminar(i) {        
+    async agregar() {
+      if (this.nuevo.nombre && this.nuevo.correo) {
+        await usuariosService.createUsuario(this.nuevo)
+        this.cargar()
+        this.mostrarAlerta('Usuario agregado correctamente.')
+        this.nuevo = { nombre: '', correo: '', password: '', rol: '' }
+      }
+    },
+    abrirEditar(i) {
+      this.indiceEditar = i
+      this.editar = { ...this.usuarios[i] }
+    },
+    async guardarEdicion() {
+      const id = this.usuarios[this.indiceEditar].id
+      await usuariosService.updateUsuario(id, this.editar)
+      this.cargar()
+      this.mostrarAlerta('Usuario actualizado correctamente.', 'warning')
+    },
+    abrirEliminar(i) {
       this.indiceEliminar = i
     },
-  async eliminar() {
-    const id = this.productos[this.indiceEliminar].id
-    await productosService.deleteProduct(id)
-    this.cargar()
-    this.mostrarAlerta('Producto eliminado.', 'danger')
+    async eliminar() {
+      const id = this.usuarios[this.indiceEliminar].id
+      await usuariosService.deleteUsuario(id)
+      this.cargar()
+      this.mostrarAlerta('Usuario eliminado.', 'danger')
     },
-    mostrarAlerta(mensaje, tipo = 'success') {   
+    mostrarAlerta(mensaje, tipo = 'success') {
       this.alerta = { mensaje, tipo }
       setTimeout(() => { this.alerta.mensaje = '' }, 3000)
     }

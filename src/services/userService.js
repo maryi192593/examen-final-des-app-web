@@ -1,26 +1,22 @@
 import axios from 'axios'
 
-const BASE_URL = 'https://6a2efbcdc9776ca6c0c52eef.mockapi.io'
-const RESOURCE = `${BASE_URL}/Producto`
+const BASE_URL = 'https://6a2efe11c9776ca6c0c53234.mockapi.io'
+const RESOURCE = `${BASE_URL}/user`
 
 export default {
-  getAllProducts() {
+  getAllUsuarios() {
     return axios.get(RESOURCE)
   },
-
-  getProductById(id) {
+  getUsuarioById(id) {
     return axios.get(`${RESOURCE}/${id}`)
   },
-
-  createProduct(data) {
+  createUsuario(data) {
     return axios.post(RESOURCE, data)
   },
-
-  updateProduct(id, data) {
+  updateUsuario(id, data) {
     return axios.put(`${RESOURCE}/${id}`, data)
   },
-
-  deleteProduct(id) {
+  deleteUsuario(id) {
     return axios.delete(`${RESOURCE}/${id}`)
   }
 }

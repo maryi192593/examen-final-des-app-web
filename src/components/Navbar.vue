@@ -80,11 +80,22 @@
             </div>
  
           </div>
- 
-          <!-- Mi cuenta -->
-          <router-link to="/login" class="btn btn-sm btn-light fw-bold" style="color: #185FA5;">
-            Mi cuenta
-          </router-link>
+         
+          <li class="nav-item" v-if="esAdmin">
+            <router-link class="nav-link" to="/admin/productos">Admin Productos</router-link>
+          </li>
+          <li class="nav-item" v-if="esAdmin">
+            <router-link class="nav-link" to="/admin/usuarios">Admin Usuarios</router-link>
+          </li>
+
+        
+        <button v-if="esAdmin" @click="cerrarSesion" class="btn btn-sm btn-light fw-bold" style="color: #185FA5;">
+          Cerrar sesión
+        </button>
+        <router-link v-else to="/login" class="btn btn-sm btn-light fw-bold" style="color: #185FA5;">
+         Mi cuenta
+       </router-link>
+          
  
         </div>
       </div>
@@ -94,9 +105,20 @@
  
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
- 
+import { useRouter } from 'vue-router'
+const router = useRouter()
 const carritoAbierto = ref(false)
 const carrito        = ref([])
+
+const esAdmin = computed(() => {  
+  const usuario = JSON.parse(sessionStorage.getItem('usuario') || 'null')
+  return usuario?.rol === 'admin'
+})
+
+function cerrarSesion() {
+  sessionStorage.removeItem('usuario')
+  router.push('/login')
+}
  
 function cargarCarrito() {
   carrito.value = JSON.parse(localStorage.getItem('technova_carrito') || '[]')
