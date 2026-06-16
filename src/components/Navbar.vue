@@ -22,6 +22,12 @@
           <li class="nav-item">
             <router-link class="nav-link" to="/dashboard/productos">Productos</router-link>
           </li>
+          <li class="nav-item" v-if="esAdmin">
+            <router-link class="nav-link" to="/admin/productos">Admin Productos</router-link>
+          </li>
+          <li class="nav-item" v-if="esAdmin">
+            <router-link class="nav-link" to="/admin/usuarios">Admin Usuarios</router-link>
+          </li>
         </ul>
  
         <!-- Carrito desplegable -->
@@ -81,12 +87,7 @@
  
           </div>
          
-          <li class="nav-item" v-if="esAdmin">
-            <router-link class="nav-link" to="/admin/productos">Admin Productos</router-link>
-          </li>
-          <li class="nav-item" v-if="esAdmin">
-            <router-link class="nav-link" to="/admin/usuarios">Admin Usuarios</router-link>
-          </li>
+          
 
         
         <button v-if="esAdmin" @click="cerrarSesion" class="btn btn-sm btn-light fw-bold" style="color: #185FA5;">

@@ -1,4 +1,6 @@
 <template>
+  <div>
+   <Navbar />
   <div class="container mt-4">
 
     <!-- ALERTA -->
@@ -87,6 +89,16 @@
           <div class="modal-body">
             <input v-model="editar.nombre" class="form-control mb-2" placeholder="Nombre" />
             <input v-model="editar.precio" type="number" class="form-control mb-2" placeholder="Precio" />
+            <select v-model="editar.categoria" class="form-select mb-2">
+              <option value="">Seleccionar categoría...</option>
+              <option>Laptops</option>
+              <option>Smartphones</option>
+              <option>Audio</option>
+              <option>Monitores</option>
+              <option>Perifericos</option>
+              <option>Tablets</option>
+            </select>
+            <input v-model="editar.imagen" class="form-control mb-2" placeholder="URL de imagen" />
           </div>
           <div class="modal-footer">
             <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -120,11 +132,14 @@
     </div>
 
   </div>
+  </div>
 </template>
 
 <script>
+import Navbar from '../components/Navbar.vue'
 import productosService from '../services/productService.js'
 export default {
+  components: { Navbar },
   data() {
     return {
       productos: [],

@@ -1,5 +1,7 @@
 <template>
-  <div class="container mt-4">
+  <div>
+   <Navbar />
+   <div class="container mt-4">
 
     <!-- ALERTA -->
     <div v-if="alerta.mensaje" :class="`alert alert-${alerta.tipo} alert-dismissible`" role="alert">
@@ -119,13 +121,16 @@
       </div>
     </div>
 
+    </div>
   </div>
 </template>
 
 <script>
+import Navbar from '../components/Navbar.vue'
 import usuariosService from '../services/userService.js'
 
 export default {
+  components: { Navbar },
   data() {
     return {
       usuarios: [],
